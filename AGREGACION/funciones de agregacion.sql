@@ -28,9 +28,13 @@ group by idCategoria
 /*SUM*/
 -- 3. Mostrar el monto vendido del año 2020. 
 
-select SUM(b.preciounidad * b.cantidad)
+SELECT * from tb_pedido
+
+SELECT * FROM tb_detalle_pedido
+
+SELECT SUM(b.preciounidad * b.cantidad)
 from tb_pedido a inner join tb_detalle_pedido b
-on a.IdPedido = b.idpedido 
+on a.IdPedido = b.idpedido
 where YEAR(a.FechaPedido) = 2020
 
 /*MAX*/
