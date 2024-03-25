@@ -6,24 +6,39 @@ go
 -- INNER JOIN:
 --1. Listado de montos totales por categoría de cada año “2019, 2020, 2021”
 
-SELECT c.idCategoria, d.nombrecategoria ,YEAR([FechaPedido]) as Anio ,SUM(a.preciounidad * cantidad) as MontoTotal
-FROM tb_detalle_pedido a inner join [dbo].[tb_pedido] b
-on a.idpedido = b.idpedido inner join tb_producto c 
-on a.idproducto = c.idproducto inner join tb_categoria d 
-on c.idCategoria = d.idcategoria
-where YEAR([FechaPedido]) in (2019,2020,2021)
-group by c.idCategoria, d.nombrecategoria , YEAR([FechaPedido])
-order by 1, 2 asc 
+SELECT * FROM [dbo].[tb_categoria] a
+SELECT * FROM [dbo].[tb_pedido] b
+SELECT * FROM [dbo].[tb_detalle_pedido] c
+SELECT * FROM [dbo].[tb_producto] d
+
+SELECT
+	  d.idCategoria as idCategoria
+	  ,a.nombrecategoria, YEAR(b.FechaPedido) as [Fecha de pedido]
+	  ,FORMAT(SUM(c.preciounidad * c.cantidad),'N0', 'en-US') as resultado
+ 
+FROM [dbo].[tb_detalle_pedido] AS c 
+INNER JOIN [dbo].[tb_producto] AS d ON c.idproducto = d.idproducto 
+INNER JOIN [dbo].[tb_categoria] AS a ON a.idcategoria = d.idCategoria
+INNER JOIN [dbo].[tb_pedido] AS b ON b.IdPedido = c.idpedido
+WHERE YEAR(b.FechaPedido) IN (2019, 2020,2021)
+GROUP BY d.idCategoria, a.nombrecategoria, YEAR(b.FechaPedido)
+ORDER BY 1,2 ASC
+ 
 
 --2. Listar los 5 primeros empleados que tengan más ventas en el mes de agosto del año 2019.
 
-SELECT TOP 5 WITH TIES a.IdEmpleado, a.Nombre, a.Apellidos , COUNT(1) aS cANTIDAD
-FROM tb_empleado a inner join tb_pedido b
-on a.IdEmpleado = b.IdEmpleado
-where YEAR(b.FechaPedido) = 2019 and MONTH(b.FechaPedido) = 8
-group by a.IdEmpleado, a.Nombre, a.Apellidos
-ORDER BY cANTIDAD  DESC
 
+SELECT * FROM [dbo].[tb_pedido] AS A
+SELECT * FROM [dbo].[tb_empleado] AS B
+----------------------------------------------------------------------
+
+SELECT TOP 5 WITH TIES B.IdEmpleado, B.Nombre, B.Apellidos, COUNT(*) AS CANTIDAD
+FROM [dbo].[tb_pedido] AS A
+INNER JOIN  [dbo].[tb_empleado] AS B ON A.IdEmpleado = B.IdEmpleado
+WHERE MONTH(A.FechaPedido) = 8 AND YEAR(A.FechaPedido) = 2019
+GROUP BY B.IdEmpleado ,B.Nombre, B.Apellidos
+ORDER BY CANTIDAD desc
+--------------------------------------
 --3. Listar los montos totales vendidos por producto.
 
 select a.idproducto, b.nombreProducto, SUM(a.preciounidad * a.cantidad) As MontoTotal
