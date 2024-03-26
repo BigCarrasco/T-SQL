@@ -41,11 +41,16 @@ ORDER BY CANTIDAD desc
 --------------------------------------
 --3. Listar los montos totales vendidos por producto.
 
-select a.idproducto, b.nombreProducto, SUM(a.preciounidad * a.cantidad) As MontoTotal
-from tb_detalle_pedido a inner join tb_producto b 
-on a.idproducto = b.idproducto
-group by a.idproducto, b.nombreProducto
-order by b.nombreProducto 
+SELECT * FROM [dbo].[tb_detalle_pedido] as A
+SELECT * FROM [dbo].[tb_producto]
+-----------------------------------------------------
+
+SELECT A.idproducto, B.nombreProducto, SUM(A.precioUnidad * A.cantidad) as Resultado_Producto
+FROM [dbo].[tb_detalle_pedido] as A
+INNER JOIN [dbo].[tb_producto] AS B
+ON A.idproducto = B.idproducto
+GROUP BY A.idproducto, B.nombreProducto
+ORDER BY A.idproducto DESC
 
 --4. Listar la suma total vendida del producto "Cerveza tibetana Barley" en el año 2020. 
 
